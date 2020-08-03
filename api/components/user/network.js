@@ -1,5 +1,6 @@
 const express = require('express')
 
+const secure = require('./secure')
 const response = require('../../../network/response')
 const Controller = require('./index.js')
 
@@ -9,7 +10,7 @@ const router = express.Router()
 router.get('/', getRoutes)
 router.get('/:id', getRoute)
 router.post('/', upsert)
-router.put('/:id', upsert)
+router.put('/:id', secure('update'), upsert)
 
 // Internal function
 function getRoutes(req, res) {
