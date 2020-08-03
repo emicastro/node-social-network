@@ -1,52 +1,52 @@
-const jwt = require('jsonwebtoken')
-const config = require('../config')
-const error = require('../utils/error')
+const jwt = require("jsonwebtoken");
+const config = require("../config");
+const error = require("../utils/error");
 
-const SECRET = config.jwt.secret
+const SECRET = config.jwt.secret;
 
 function sign(data) {
-  return jwt.sign(data, SECRET)
+  return jwt.sign(data, SECRET);
 }
 
 function verify(token) {
-  return jwt.verify(token, SECRET)
+  return jwt.verify(token, SECRET);
 }
 
 const check = {
   own: function (req, owner) {
-    const decoded = decodeHeader(req)
-    console.log(decoder)
+    const decoded = decodeHeader(req);
+    console.log(decoder);
     if (decoded.id !== owner) {
-      throw error('Action not allowed.', 401)
+      throw error("Action not allowed.", 401);
     }
-  }
-}
+  },
+};
 
 function decodeHeader(code) {
-  const authorization = req.headers.authorization || ''
-  const token = getToken(authorization)
-  const decoded = verify(token)
+  const authorization = req.headers.authorization || "";
+  const token = getToken(authorization);
+  const decoded = verify(token);
 
-  req.user = decoded
+  req.user = decoded;
 
-  return decoded
+  return decoded;
 }
 
 function getToken(auth) {
   if (!auth) {
-    throw new Error('Token is not coming.')
+    throw error("Token is not coming.", 401);
   }
 
-  if (auth.indexOf('Bearer ') === -1) {
-    throw new Error('Invalid format')
+  if (auth.indexOf("Bearer ") === -1) {
+    throw error("Invalid format", 401);
   }
 
-  let token = auth.replace('Bearer ', '')
+  let token = auth.replace("Bearer ", "");
 
-  return token
+  return token;
 }
 
 module.exports = {
   sign,
-  check
-}
+  check,
+};
