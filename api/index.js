@@ -15,7 +15,7 @@ app.use(bodyParser.json())
 
 // ROUTER
 app.use('/api/user', user)
-app.use('api/auth', auth)
+app.use('/api/auth', auth)
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc))
 
 app.use(errors)
