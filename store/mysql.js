@@ -62,12 +62,39 @@ function insert(table, data) {
   })
 }
 
+function update(table, data) {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      `UPDATE ${table} SET ? WHERE id=?`,
+      [data, data.id],
+      (err, result) => {
+        if (err) return reject(err)
+        resolve(result)
+      }
+    )
+  })
+}
+
 function upsert(table, data) {
-  return insert(table, data)
+  if (data && data.id) {
+    return update(table, data)
+  } else {
+    return insert(table, data)
+  }
+}
+
+function query(table, query) {
+  return new Promise((resolve, reject) => {
+    connection.query(`SELECT * FROM ${table} WHERE ?`, query, (err, result) => {
+      if (err) return reject(err)
+      resolve(result[0] || null)
+    })
+  })
 }
 
 module.exports = {
   list,
   get,
-  upsert
+  upsert,
+  query
 }

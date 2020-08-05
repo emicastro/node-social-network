@@ -15,7 +15,7 @@ module.exports = function (injectedStore) {
     const data = await store.query(TABLE, { username: username })
     return bcrypt.compare(password, data.password).then((areEquals) => {
       if (areEquals) {
-        return auth.sign(data)
+        return auth.sign({ ...data })
       } else {
         throw new Error('Invalid info.')
       }
