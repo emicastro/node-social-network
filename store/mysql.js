@@ -14,7 +14,7 @@ let connection
 function handleCon() {
   connection = mysql.createConnection(dbconf)
 
-  connection.connect((err) => {
+  connection.connect(err => {
     if (err) {
       console.error('[db err]', err)
       setTimeout(handleCon, 2000)
@@ -23,7 +23,7 @@ function handleCon() {
     }
   })
 
-  connection.on('error', (err) => {
+  connection.on('error', err => {
     console.error('[db err]', err)
     if (err.code === 'PROTOCOL_CONNECTION_LOST') {
       handleCon()
@@ -83,12 +83,23 @@ function upsert(table, data) {
   }
 }
 
-function query(table, query) {
+function query(table, query, join) {
+  let joinQuery = ''
+  if (join) {
+    const key = Object.keys(join)[0]
+    const val = join[key]
+    joinQuery = `JOIN ${key} ON ${table}.${val} = ${key}.id`
+  }
+
   return new Promise((resolve, reject) => {
-    connection.query(`SELECT * FROM ${table} WHERE ?`, query, (err, result) => {
-      if (err) return reject(err)
-      resolve(result[0] || null)
-    })
+    connection.query(
+      `SELECT * FROM ${table} ${joinQuery} WHERE ${table}.?`,
+      query,
+      (err, result) => {
+        if (err) return reject(err)
+        resolve(result[0] || null)
+      }
+    )
   })
 }
 
