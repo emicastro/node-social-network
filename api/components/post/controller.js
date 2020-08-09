@@ -13,6 +13,10 @@ module.exports = function (injectedStore) {
     return store.list(TABLE)
   }
 
+  function get(id) {
+    return store.get(TABLE, id)
+  }
+
   function upsert({ id = null, text, user }) {
     const post = {
       text: text,
@@ -28,5 +32,5 @@ module.exports = function (injectedStore) {
     return store.upsert(TABLE, post)
   }
 
-  return { list, upsert }
+  return { list, get, upsert }
 }
