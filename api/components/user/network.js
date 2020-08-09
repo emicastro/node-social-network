@@ -13,6 +13,7 @@ router.post('/', upsert)
 router.put('/:id', secure('update'), upsert)
 router.post('/follow/:id', secure('follow'), follow)
 router.get('/:id/following', following)
+router.delete('/:id', remove)
 
 // Internal functions
 function list(req, res, next) {
@@ -55,12 +56,12 @@ function following(req, res, next) {
     .catch(next)
 }
 
-router.delete('/:id', (req, res, next) => {
+function remove(req, res, next) {
   Controller.remove(req.params.id)
     .then(userId => {
       response.success(req, res, userId, 200)
     })
     .catch(next)
-})
+}
 
 module.exports = router
