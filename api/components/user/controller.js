@@ -44,10 +44,18 @@ module.exports = function (injectedStore) {
     return store.remove(TABLE, id)
   }
 
+  function follow(from, to) {
+    return store.upsert(TABLE + '_follow', {
+      user_from: from,
+      user_to: to
+    })
+  }
+
   return {
     list,
     get,
     upsert,
-    remove
+    remove,
+    follow
   }
 }
