@@ -1,3 +1,4 @@
+const { response } = require('express')
 const { nanoid } = require('nanoid')
 const { default: user } = require('../user')
 
@@ -32,5 +33,9 @@ module.exports = function (injectedStore) {
     return store.upsert(TABLE, post)
   }
 
-  return { list, get, upsert }
+  function remove(id) {
+    store.remove(TABLE, id)
+  }
+
+  return { list, get, upsert, remove }
 }
