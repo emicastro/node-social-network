@@ -1,3 +1,6 @@
+const { nanoid } = require('nanoid')
+const { default: user } = require('../user')
+
 const TABLE = 'post'
 
 module.exports = function (injectedStore) {
@@ -10,5 +13,20 @@ module.exports = function (injectedStore) {
     return store.list(TABLE)
   }
 
-  return { list }
+  function upsert({ id = null, text, user }) {
+    const post = {
+      text: text,
+      user: user
+    }
+
+    if (id) {
+      post.id = id
+    } else {
+      post.id = nanoid()
+    }
+
+    return store.upsert(TABLE, post)
+  }
+
+  return { list, upsert }
 }
