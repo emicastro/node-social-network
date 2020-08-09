@@ -14,7 +14,7 @@ router.put('/:id', secure('update'), upsert)
 router.post('/follow/:id', secure('follow'), follow)
 router.get('/:id/following', following)
 
-// Internal function
+// Internal functions
 function list(req, res, next) {
   Controller.list()
     .then(usersList => {
