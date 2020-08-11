@@ -12,5 +12,5 @@ app.use(bodyParser.json())
 app.use('/', router)
 
 app.listen(config.mysqlService.port, () => {
-  console.log('MySQL Service listening on port', config.mysqlService.port)
+  console.log('MySQL Service listening on port ', config.mysqlService.port)
 })
