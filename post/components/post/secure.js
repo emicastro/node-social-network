@@ -1,19 +1,28 @@
 const auth = require('../../../auth')
+const Controller = require('./index')
 
-module.exports = function checkAuth(action) {
-  function middleware(req, res, next) {
+function checkAuth(action, options) {
+  async function middleware(req, res, next) {
     switch (action) {
-      case 'update':
-        const owner = req.body.user
+      case 'add':
+      case 'list_own':
+        auth.check.logged(req)
+        next()
+        break
 
-        auth.check.own(req, owner)
+      case 'update':
+        const post = await Controller.get(req.body.id)
+        auth.check.own(req, post.user)
         next()
         break
 
       default:
         next()
+        break
     }
   }
 
   return middleware
 }
+
+module.exports = checkAuth

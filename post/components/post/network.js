@@ -1,17 +1,22 @@
 const express = require('express')
 
 const response = require('./../../../network/response')
+const auth = require('./secure')
 const Controller = require('./index')
 
 const router = express.Router()
 
 // TODO: Create the remaining functions to create a post, edit a post and get a post by id
 
-// Routes
-router.get('/', list)
-router.get('/:id', get)
-router.post('/', upsert)
-router.delete('/:id', remove)
+// Set routes
+router.get('/', auth('list'), list)
+router.get('/:id', auth('get'), get)
+router.post('/', auth('add'), upsert)
+router.put('/', auth('update', { owner: 'user' }), upsert)
+router.get('/like', auth('list_own'), postsLiked)
+router.post('/:id/like', auth('add'), like)
+router.get('/:id/like', auth('list'), postLikers)
+router.delete('/:id', auth('delete', { owner: 'user' }), remove)
 
 // Internal functions
 function list(req, res, next) {
@@ -27,14 +32,32 @@ function get(req, res, next) {
 }
 
 function upsert(req, res, next) {
-  Controller.upsert(req.body)
+  Controller.upsert(req.body, req.user.id)
     .then(post => response.success(req, res, post, 201))
     .catch(next)
 }
 
 function remove(req, res, next) {
-  Controller.remove(req.params.id)
+  Controller.remove(req.params.id, req.user.id)
     .then(postId => response.success(req, res, postId, 200))
+    .catch(next)
+}
+
+function like(req, res, next) {
+  Controller.like(req.params.id, req.user.sub)
+    .then(post => response.success(req, res, post, 201))
+    .catch(next)
+}
+
+function postsLiked(req, res, next) {
+  Controller.postsLiked(req.user.sub)
+    .then(post => response.success(req, res, post, 200))
+    .catch(next)
+}
+
+function postLikers(req, res, next) {
+  Controller.postLikers(req.params.id)
+    .then(post => response.success(req, res, post, 200))
     .catch(next)
 }
 
